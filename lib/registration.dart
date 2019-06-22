@@ -11,13 +11,19 @@ class RegistrationPage extends State<Registration> {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   SharedPreferences sharedPreferences;
+  TextEditingController firstname = new TextEditingController();
+  TextEditingController lastname = new TextEditingController();
+  TextEditingController email = new TextEditingController();
   bool validFirstname = false;
   bool validLastname = false;
   bool validEmail = false;
   bool autoValidate = false;
-  String firstname;
-  String lastname;
-  String email;
+
+  @override
+  void initState() {
+    super.initState();
+    getSharedPrefs();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,30 +40,32 @@ class RegistrationPage extends State<Registration> {
             child: Column(
               children: <Widget>[
                 TextFormField(
-//                  controller: firstname,
-                  initialValue: firstname,
+                  controller: firstname,
                   decoration: InputDecoration(labelText: 'Nome'),
                   keyboardType: TextInputType.text,
+                  validator: validateFirstname,
                   onSaved: (String value) {
-                    firstname = value;
+                    firstname.text = value;
                   },
                 ),
                 TextFormField(
-//                  controller: firstname,
-                  initialValue: lastname,
+                  controller: lastname,
+//                  initialValue: lastname,
                   decoration: InputDecoration(labelText: 'Sobrenome'),
                   keyboardType: TextInputType.text,
+                  validator: validateLastname,
                   onSaved: (String value) {
-                    lastname = value;
+                    lastname.text = value;
                   },
                 ),
                 TextFormField(
-//                  controller: firstname,
-                  initialValue: email,
+                  controller: email,
+//                  initialValue: email,
                   decoration: InputDecoration(labelText: 'Nome'),
                   keyboardType: TextInputType.text,
+                  validator: validateEmail,
                   onSaved: (String value) {
-                    email = value;
+                    email.text = value;
                   },
                 ),
                 SizedBox(
@@ -78,15 +86,26 @@ class RegistrationPage extends State<Registration> {
     );
   }
 
-  saveSharedPrefs() async {
+  getSharedPrefs() async {
     sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.setString('firstname', firstname);
-    sharedPreferences.setString('lastname', lastname);
-    sharedPreferences.setString('email', email);
-    print(sharedPreferences.getString('firstname'));
-    print(sharedPreferences.getString('lastname'));
-    print(sharedPreferences.getString('email'));
-    showToast('Dados salvos com sucesso');
+    firstname.text = sharedPreferences.getString('firstname');
+    lastname.text = sharedPreferences.getString('lastname');
+    email.text = sharedPreferences.getString('email');
+  }
+
+  saveSharedPrefs() async {
+    if(validFirstname && validLastname && validEmail) {
+      sharedPreferences = await SharedPreferences.getInstance();
+      sharedPreferences.setString('firstname', firstname.text.toString());
+      sharedPreferences.setString('lastname', lastname.text.toString());
+      sharedPreferences.setString('email', email.text.toString());
+      print(sharedPreferences.getString('firstname'));
+      print(sharedPreferences.getString('lastname'));
+      print(sharedPreferences.getString('email'));
+      showToast('Dados salvos com sucesso');
+    } else {
+      showToast('Não salvo, favor corrigir os dados');
+    }
   }
 
   void showToast(String msg) {
@@ -99,7 +118,7 @@ class RegistrationPage extends State<Registration> {
       validFirstname = false;
       return 'Deve contar mais de 3 caracteres';
     } else if (value.contains(new RegExp(r'[0-9\W+]'))) {
-      validLastname = false;
+      validFirstname = false;
       return 'Não deve conter números';
     } else {
       validFirstname = true;
@@ -128,6 +147,7 @@ class RegistrationPage extends State<Registration> {
       validEmail = false;
       return 'Digite um email válido';
     } else {
+      validEmail = true;
       return null;
     }
   }
