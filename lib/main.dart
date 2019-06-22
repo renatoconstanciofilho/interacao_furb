@@ -15,6 +15,7 @@ void main() => runApp(MaterialApp(
         routes: {
           '/': (context) => MainMenu(),
           '/register': (context) => Registration(),
+//          '/list_events': (context) => ListEvents(),
         }));
 
 String getStartupScreen(){
