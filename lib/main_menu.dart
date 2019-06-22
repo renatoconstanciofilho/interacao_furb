@@ -39,7 +39,7 @@ class MainMenuPage extends State<MainMenu> {
           ),
           Card(
             child: ListTile(
-              leading: Icon(Icons.person),
+              leading: Icon(Icons.format_list_numbered),
               title: Text('Listar Eventos'),
               onTap: (){
                 Navigator.pushNamed(context, '/list');
@@ -48,7 +48,7 @@ class MainMenuPage extends State<MainMenu> {
           ),
           Card(
             child: ListTile(
-              leading: Icon(Icons.camera_alt),
+              leading: Icon(Icons.photo_camera),
               title: Text('Presença via QR Code'),
               onTap: (){
                 setState(() {
